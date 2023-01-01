@@ -3,6 +3,8 @@ module SessionsHelper
   # session is a built in rails method that includes encryption
   def log_in(user)
     session[:user_id] = user.id
+    # Guard against session replay attacks
+    session[:session_token] = user.session_token
   end
 
   # Rememeber a user in a persistent session
@@ -27,8 +29,12 @@ module SessionsHelper
 
     # Be careful to remember this is not a comparison but an assignment
     if (user_id = session[:user_id])
-      @current_user ||= User.find_by(id: user_id)
+      user = User.find_by(id: user_id)
+      if user && session[:session_token] = user.session_token
+        @current_user = user
+      end
     elsif (user_id = cookies.encrypted[:user_id])
+      # raise # use this as a way to test if a section of code is covered by tests
       user = User.find_by(id: user_id)
       if user && user.authenticated?(cookies[:remember_token])
         log_in user
