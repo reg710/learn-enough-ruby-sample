@@ -53,4 +53,17 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_url
   end
 
+  test "should prevent editing admin attribute via patch request" do
+    log_in_as(@alternate_user)
+    assert_not @alternate_user.admin?
+    patch user_path(@alternate_user), params: {
+      user: {
+        password: "password",
+        password_confirmation: "password",
+        admin: true
+      }
+    }
+    assert_not @alternate_user.reload.admin?
+  end
+
 end
