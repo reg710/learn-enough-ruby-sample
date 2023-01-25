@@ -5,7 +5,10 @@ User.create!(
   email: "example@railstutorial.org",
   password: "password",
   password_confirmation: "password",
-  admin: true
+  admin: true,
+  activated: true,
+  # Rails helper that returns current timestamp while accounting for time zone on the server
+  activated_at: Time.zone.now 
 )
 
 # Generate a bunch of additional users
@@ -19,5 +22,7 @@ User.create!(
     email: email,
     password: password,
     password_confirmation: password,
+    activated: true,
+    activated_at: Time.zone.now
   )
 end
