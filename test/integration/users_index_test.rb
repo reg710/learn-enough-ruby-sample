@@ -45,7 +45,7 @@ class UsersIndexAdminTest < UsersIndexAdmin
   
   test "should display only activated users" do
     User.paginate(page: 1).first.toggle!(:activated)
-    assigns(:user).each do |user|
+    assigns(:users).each do |user|
       assert user.activated?
     end
   end
