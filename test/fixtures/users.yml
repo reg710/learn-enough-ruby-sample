@@ -8,13 +8,6 @@ jordan:
   activated: true
   activated_at: <%= Time.zone.now %>
 
-# inactive:
-#   name: Inactive User
-#   email: inactive@example.com
-#   password_digest: <%= User.digest('password') %>  
-#   admin: false
-#   activated: false
-
 elaine:
   name: Elaine Somebody
   email: elaine@sample.edu
@@ -52,3 +45,9 @@ user_<%= n %>:
   activated_at: <%= Time.zone.now %>
 <% end %>
 
+inactive:
+  name: Inactive User
+  email: inactive@example.com
+  password_digest: <%= User.digest('password') %>  
+  admin: false
+  activated: false
