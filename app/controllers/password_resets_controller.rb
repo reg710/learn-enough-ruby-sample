@@ -1,6 +1,7 @@
 class PasswordResetsController < ApplicationController
   before_action :get_user, only: [:edit, :update]
   before_action :valid_user, only: [:edit, :update]
+  before_action :check_expiration, only: [:edit, :update]
 
   def new
   end
@@ -18,11 +19,32 @@ class PasswordResetsController < ApplicationController
     end
   end
 
-
   def edit
   end
 
+  def update
+    if params[:user][:password].empty?
+      @user.errors.add(:password, "can't be empty")
+      render 'edit', status: :unprocessable_entity
+    elsif @user.update(user_params)
+      # @user.remember // unsure if this is the test answer
+      reset_session
+      log_in @user
+      # This prevents someone from clicking 'back' on a public computer and resetting again
+      @user.update_attribute(:reset_digest, nil)
+      flash[:success] = "Password has been reset."
+      redirect_to @user
+    else
+      render 'edit', status: :unprocessable_entity
+    end
+  end
+  
+
   private
+
+    def user_params
+      params.require(:user).permit(:password, :password_confirmation)
+    end
 
     def get_user
       @user = User.find_by(email: params[:email])
@@ -33,5 +55,12 @@ class PasswordResetsController < ApplicationController
         redirect_to root_url
       end
     end
-    
+
+    def check_expiration
+      if @user.password_reset_expired?
+        flash[:danger] = "Password reset has expired"
+        redirect_to new_password_reset_url
+      end
+    end
+
 end
