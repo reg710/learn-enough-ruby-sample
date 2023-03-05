@@ -8,7 +8,7 @@ User.create!(
   admin: true,
   activated: true,
   # Rails helper that returns current timestamp while accounting for time zone on the server
-  activated_at: Time.zone.now 
+  activated_at: Time.zone.now,
 )
 
 # Generate a bunch of additional users
@@ -23,6 +23,12 @@ User.create!(
     password: password,
     password_confirmation: password,
     activated: true,
-    activated_at: Time.zone.now
+    activated_at: Time.zone.now,
   )
+end
+
+users = User.order(:created_at).take(6)
+50.times do
+  content = Faker::Lorem.sentence(word_count: 5)
+  users.each { |user| user.microposts.create!(content: content) }
 end
