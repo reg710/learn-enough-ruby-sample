@@ -38,3 +38,25 @@ class MicropostsInterfaceTest < MicropostsInterface
     assert_select "a", { text: "delete", count: 0 }
   end
 end
+
+class ImageUploadTest < MicropostsInterface
+
+  test "should have a file input field for images" do
+    get root_path
+    assert_select 'input[type=file]'
+  end
+
+  test "should be able to attach an image do" do
+    cont = "this micropost really ties the room together"
+    img = fixture_file_upload('test/fixtures/kitten.jpg', 'image/jpeg')
+    post microposts_path, params: {
+      micropost: {
+        content: cont,
+        image: img
+      }
+    }
+    latest_post = assigns(:micropost)
+    # debugger
+    assert latest_post.image.attached?
+  end
+end  
