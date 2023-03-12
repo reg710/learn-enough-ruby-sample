@@ -102,6 +102,7 @@ class UserTest < ActiveSupport::TestCase
     
     jordan.follow(archer)
     assert jordan.following?(archer)
+    assert archer.followers.include?(jordan)
 
     jordan.unfollow(archer)
     assert_not jordan.following?(archer)

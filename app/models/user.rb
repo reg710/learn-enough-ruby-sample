@@ -1,8 +1,10 @@
 class User < ApplicationRecord
     has_many :microposts, dependent: :destroy
     has_many :active_relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
+    has_many :passive_relationships, class_name: "Relationship", foreign_key: "followed_id", dependent: :destroy
     # The source parameter is overriding a Rails default so we can use our given term of following
     has_many :following, through: :active_relationships, source: :followed
+    has_many :followers, through: :passive_relationships, source: :follower
 
     attr_accessor :remember_token, :activation_token, :reset_token
 
@@ -100,7 +102,7 @@ class User < ApplicationRecord
     def following?(other_user)
         following.include?(other_user)
     end
-    
+
     private
 
         def downcase_email
